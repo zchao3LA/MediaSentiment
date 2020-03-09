@@ -580,7 +580,7 @@
 
 * al_arabia_tv_, 501253480 - Active
 
-* BuzzFeed, 5695632 - Active
+* BuzzFeedNews, 5695632 - Active
 
 * caixin, 104146203 - Active
 
