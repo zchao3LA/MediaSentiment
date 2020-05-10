@@ -7,7 +7,9 @@ import importlib
 importlib.reload(CleanData)
 importlib.reload(SaveState)
 from CleanData import clean_comment, get_bag_of_words
-
+import nltk
+from nltk.corpus import stopwords
+nltk.download('stopwords')
 
 extreme_frac = 0.2  # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media
 
