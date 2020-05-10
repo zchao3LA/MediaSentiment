@@ -96,7 +96,9 @@ train_right = sample(right_media,int(len(right_media)*training_frac))
 test_left = list(set(left_media)-set(train_left))
 test_right = list(set(right_media)-set(train_right))
 print('List of left_media in training set')
-print(train_left, train_right)
+print(train_left)
+print('List of right_media in training set')
+print(train_right)
 
 # Train binary multinomial Naive Bayes model
 
@@ -117,11 +119,13 @@ def get_binary_NB_model_LR(bag_of_words, df):
     return nb
 nb_model = get_binary_NB_model_LR(bag_of_words, df)
 
+print("---Execution time0: %s seconds ---" % (time.time() - start_time))
+
 predict_probs = nb_model.predict_proba(bag_of_words)
 df['left_prob'] = predict_probs[:,0]
 df['right_prob'] = predict_probs[:,1]
 df['pred_LR'] = nb_model.predict(bag_of_words)
-
+print("---Execution time1: %s seconds ---" % (time.time() - start_time))
 average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
 media_bias = media_bias.sort_values(by = 'Source')
@@ -136,4 +140,4 @@ plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png
 
 
 
-print("---Execution time: %s seconds ---" % (time.time() - start_time))
+print("---Execution time2: %s seconds ---" % (time.time() - start_time))
