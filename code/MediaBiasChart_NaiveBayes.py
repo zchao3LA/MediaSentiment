@@ -13,6 +13,12 @@ nltk.download('stopwords')
 import random
 from random import sample
 
+from sklearn.naive_bayes import MultinomialNB, ComplementNB
+from sklearn import metrics
+
+import time
+start_time = time.time()
+
 extreme_frac = 0.2   # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media. i.e. _extreme_frac_ leftmost media are selected as left media
 training_frac = 0.5  # This sample_frac stands for the percentage of (left/right, high/low) media to be sampled as training data
 
@@ -93,8 +99,7 @@ print('List of left_media in training set')
 print(train_left, train_right)
 
 # Train binary multinomial Naive Bayes model
-from sklearn.naive_bayes import MultinomialNB, ComplementNB
-from sklearn import metrics
+
 def get_binary_NB_model_LR(bag_of_words, df):
     # Training data:
     class1_words = bag_of_words[df['user_screen_name'].isin(train_left),:]
@@ -126,3 +131,9 @@ plt.xlabel('Bias from MediaBiasChart', fontsize=24)
 plt.ylabel('Mean right_probability from model', fontsize=24)
 plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
+
+
+
+
+
+print("---Execution time: %s seconds ---" % (time.time() - start_time))
