@@ -122,10 +122,11 @@ nb_model = get_binary_NB_model_LR(bag_of_words, df)
 print("---Execution time0: %s seconds ---" % (time.time() - start_time))
 
 predict_probs = nb_model.predict_proba(bag_of_words)
+print("---Execution time1: %s seconds ---" % (time.time() - start_time))
 df['left_prob'] = predict_probs[:,0]
 df['right_prob'] = predict_probs[:,1]
 df['pred_LR'] = nb_model.predict(bag_of_words)
-print("---Execution time1: %s seconds ---" % (time.time() - start_time))
+print("---Execution time1.5: %s seconds ---" % (time.time() - start_time))
 average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
 media_bias = media_bias.sort_values(by = 'Source')
