@@ -2,6 +2,9 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt
 import numpy as np
+import CleanData, SaveState
+importlib.reload(CleanData)
+importlib.reload(SaveState)
 from CleanData import clean_comment, get_bag_of_words
 
 
