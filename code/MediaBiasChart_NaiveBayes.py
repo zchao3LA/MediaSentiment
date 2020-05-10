@@ -10,10 +10,11 @@ from CleanData import clean_comment, get_bag_of_words
 import nltk
 from nltk.corpus import stopwords
 nltk.download('stopwords')
+import random
+from random import sample
 
-extreme_frac = 0.2  # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media
-
-
+extreme_frac = 0.2   # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media. i.e. _extreme_frac_ leftmost media are selected as left media
+training_frac = 0.5  # This sample_frac stands for the percentage of (left/right, high/low) media to be sampled as training data
 
 
 # Load all article reviews from MediaBiasChart V5.0:
@@ -73,12 +74,55 @@ df = df.loc[df['user_screen_name'].isin(all_media)]
 print('Total number of tweets: ')
 print(df.shape[0])
 
-df_2018 = df.loc[((df['created_at']) >= '2018-01-01') & ((df['created_at']) <= '2018-12-31')]
-df_2018 = df_2018.reset_index(drop = True)
 import preprocessor as p
-df_2018['text']  = df_2018['text'].apply(p.clean)
+df['text']  = df['text'].apply(p.clean)
 
-bag_of_words, vectorizer = get_bag_of_words(df_2018['text'],ngram_range=(1,3), min_df=0.0002)
+bag_of_words, vectorizer = get_bag_of_words(df['text'],ngram_range=(1,3), min_df=0.0002)
 
 print('Shape of bag_of_words: ')
 print(bag_of_words.shape)
+
+
+
+random.seed(0)
+train_left = sample(left_media,int(len(left_media)*training_frac))
+train_right = sample(right_media,int(len(right_media)*training_frac))
+test_left = list(set(left_media)-set(train_left))
+test_right = list(set(right_media)-set(train_right))
+print('List of left_media in training set')
+print(train_left, train_right)
+
+# Train binary multinomial Naive Bayes model
+from sklearn.naive_bayes import MultinomialNB, ComplementNB
+from sklearn import metrics
+def get_binary_NB_model_LR(bag_of_words, df):
+    # Training data:
+    class1_words = bag_of_words[df['user_screen_name'].isin(train_left),:]
+    class2_words = bag_of_words[df['user_screen_name'].isin(train_right),:]
+    train_tweets = np.concatenate((class1_words,class2_words))
+    labels = np.concatenate((np.zeros(class1_words.shape[0]),np.ones(class2_words.shape[0])))
+    nb = ComplementNB()
+    nb.fit(train_tweets, labels)
+    # # Performance on training data
+    predictions = nb.predict(train_tweets)
+    print('Training Accuracy: ' + str(sum(labels==predictions)/len(labels)))
+    # Compute the error.
+    tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
+    print(tn, fp, fn, tp)
+    return nb
+nb_model = get_binary_NB_model_LR(bag_of_words, df)
+
+predict_probs = nb_model.predict_proba(bag_of_words)
+df['left_prob'] = predict_probs[:,0]
+df['right_prob'] = predict_probs[:,1]
+df['pred_LR'] = nb_model.predict(bag_of_words)
+
+average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
+
+media_bias = media_bias.sort_values(by = 'Source')
+bias = media_bias.Bias
+plt.figure(figsize=(13, 8))
+plt.xlabel('Bias from MediaBiasChart', fontsize=24)
+plt.ylabel('Mean right_probability from model', fontsize=24)
+plt.scatter(bias.tolist(), average_right_prob.tolist())
+plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
