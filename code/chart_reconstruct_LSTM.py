@@ -63,6 +63,12 @@ df = df[['user_screen_name', 'text']]
 
 all_media = media_bias['Source'].tolist()
 df = df.loc[df['user_screen_name'].isin(all_media)]
+
+### Take a subset; comment this piece for the formal test ###
+df = df.loc[((df['created_at']) >= '2018-01-01') & ((df['created_at']) <= '2018-4-30')]
+df = df.reset_index(drop = True)
+###
+
 df = df.sample(frac=1).reset_index(drop=True)
 
 print('Total number of tweets: ')
