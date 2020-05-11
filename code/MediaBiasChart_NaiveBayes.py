@@ -119,24 +119,17 @@ def get_binary_NB_model_LR(bag_of_words, df):
     return nb
 nb_model = get_binary_NB_model_LR(bag_of_words, df)
 
-print("---Execution time0: %s seconds ---" % (time.time() - start_time))
 
 predict_probs = nb_model.predict_proba(bag_of_words)
-print("---Execution time1: %s seconds ---" % (time.time() - start_time))
 df['right_prob'] = predict_probs[:,1]
-print("---Execution time1.5: %s seconds ---" % (time.time() - start_time))
 average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
 media_bias = media_bias.sort_values(by = 'Source')
 bias = media_bias.Bias
-plt.figure(figsize=(13, 8))
 plt.xlabel('Bias from MediaBiasChart', fontsize=24)
 plt.ylabel('Mean right_probability from model', fontsize=24)
 plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
 
 
-
-
-
-print("---Execution time2: %s seconds ---" % (time.time() - start_time))
+print("---Execution time: %s seconds ---" % (time.time() - start_time))
