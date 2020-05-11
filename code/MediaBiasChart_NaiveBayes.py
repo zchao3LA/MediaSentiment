@@ -209,6 +209,7 @@ print("---Execution time1: %s seconds ---" % (time.time() - start_time))
 
 n_tweets = df.groupby(['user_screen_name']).size()
 n_tweets = n_tweets.rename("n_tweets")
+N = media_bias.shape[0]
 np.random.seed(1)
 colors = np.random.rand(N)
 media_bias = media_bias.set_index('Source').join(average_right_prob).join(average_high_prob).join(n_tweets)
@@ -249,7 +250,6 @@ def plotsubset(names, dir1, dir2):
     plt.ylabel('Reconstructed Quality', fontsize=24)
     plt.savefig(dir2)
     
-
 
 names = media_bias.Source.tolist()
 dir1 = '../results/half_media/media_all_origin.png'
