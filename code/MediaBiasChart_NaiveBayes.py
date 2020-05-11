@@ -195,9 +195,9 @@ plt.savefig('../results/half_media/qualvs_frac'+str(int(100*extreme_frac))+'.png
 
 
 testLR_correct = sum(df[df['user_screen_name'].isin(test_left)].right_prob <= 0.5) + \
-                 sum(df[df['user_screen_name'].isin(test_right)].nb_tweet_pred_LR > 0.5)
-testLH_correct = sum(df[df['user_screen_name'].isin(test_low)].nb_tweet_pred_LH <= 0.5) + \
-                 sum(df[df['user_screen_name'].isin(test_high)].nb_tweet_pred_LH > 0.5)
+                 sum(df[df['user_screen_name'].isin(test_right)].right_prob > 0.5)
+testLH_correct = sum(df[df['user_screen_name'].isin(test_low)].high_prob <= 0.5) + \
+                 sum(df[df['user_screen_name'].isin(test_high)].high_prob > 0.5)
 print('Bias Testing Accuracy: ' + str(testLR_correct/sum(df['user_screen_name'].isin(test_left+test_right))))
 print('Quality Testing Accuracy: ' + str(testLH_correct/sum(df['user_screen_name'].isin(test_low+test_high))))
 
