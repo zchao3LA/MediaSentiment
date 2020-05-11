@@ -165,13 +165,13 @@ plt.savefig('../results/half_tweet/qualvs_frac'+str(int(100*extreme_frac))+'.png
 
 
 
-bias_correct = sum(df[(df['user_screen_name'].isin(test_left)) & (df['sampled'] == 0)].pred_LR == 0) + \
-               sum(df[(df['user_screen_name'].isin(test_right)) & (df['sampled'] == 0)].pred_LR == 1)
-qual_correct = sum(df[(df['user_screen_name'].isin(test_low)) & (df['sampled'] == 0)].pred_LH == 0) + \
-                 sum(df[(df['user_screen_name'].isin(test_high)) & (df['sampled'] == 0)].pred_LH == 1)
+bias_correct = sum(df[(df['user_screen_name'].isin(left_media)) & (df['sampled'] == 0)].right_prob <= 0.5) + \
+               sum(df[(df['user_screen_name'].isin(right_media)) & (df['sampled'] == 0)].right_prob > 0.5)
+qual_correct = sum(df[(df['user_screen_name'].isin(low_media)) & (df['sampled'] == 0)].high_prob <= 0.5) + \
+               sum(df[(df['user_screen_name'].isin(high_media)) & (df['sampled'] == 0)].high_prob > 0.5)
 
-print('Bias Testing Accuracy: ' + str(bias_correct/sum(df['user_screen_name'].isin(test_left+test_right))))
-print('Quality Testing Accuracy: ' + str(qual_correct/sum(df['user_screen_name'].isin(test_low+test_high))))
+print('Bias Testing Accuracy: ' + str(bias_correct/sum((df['user_screen_name'].isin(left_media+right_media)) & (df['sampled'] == 0))))
+print('Quality Testing Accuracy: ' + str(qual_correct/sum((df['user_screen_name'].isin(high_media+low_media)) & (df['sampled'] == 0))))
 
 
 
