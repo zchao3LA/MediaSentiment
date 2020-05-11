@@ -115,7 +115,7 @@ print(train_low)
 
 # Train binary multinomial Naive Bayes model
 
-def NB_model_qual(bag_of_words, df):
+def NB_model_bias(bag_of_words, df):
     # Training data:
     class1_words = bag_of_words[df['user_screen_name'].isin(train_left),:]
     class2_words = bag_of_words[df['user_screen_name'].isin(train_right),:]
@@ -130,10 +130,10 @@ def NB_model_qual(bag_of_words, df):
     tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
     print(tn, fp, fn, tp)
     return nb
-nb_LR = NB_model_qual(bag_of_words, df)
+nb_bias = NB_model_bias(bag_of_words, df)
 
 
-predict_bias = nb_LR.predict_proba(bag_of_words)
+predict_bias = nb_bias.predict_proba(bag_of_words)
 df['right_prob'] = predict_bias[:,1]
 average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
