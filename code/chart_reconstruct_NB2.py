@@ -14,17 +14,24 @@ from nltk.corpus import stopwords
 nltk.download('stopwords')
 import random
 from random import sample
-
+import argparse
 from sklearn.naive_bayes import MultinomialNB, ComplementNB
 from sklearn import metrics
 import scipy.stats
 import time
 start_time = time.time()
 
-extreme_frac = 0.2   # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media. i.e. _extreme_frac_ leftmost media are selected as left media
+parser = argparse.ArgumentParser(description='params')
+parser.add_argument('--media', type=float, default=0.2, help='portion of media to be considered as left/right/low/high')
+parser.add_argument('--train', type=float, default=0.5, help='portion of media to be considered as left/right/low/high')
+args = parser.parse_args()
+# extreme_frac = 0.2   # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media. i.e. _extreme_frac_ leftmost media are selected as left media
 # training_frac = 0.5  # This sample_frac stands for the percentage of (left/right, high/low) media to be sampled as training data
-training_frac = float(input("Enter a fraction for training set: (default = 0.5)") or '0.5')
+# training_frac = float(input("Enter a fraction for training set: (default = 0.5)") or '0.5')
 
+
+extreme_frac = args.media
+training_frac = args.train
 # Load all article reviews from MediaBiasChart V5.0:
 media_bias = pd.read_csv('../data/MediaBiasChart.csv')
 media_bias = media_bias.groupby('Source').mean()
