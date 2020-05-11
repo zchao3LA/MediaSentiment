@@ -83,7 +83,6 @@ print(df.shape[0])
 
 import preprocessor as p
 df['text']  = df['text'].apply(p.clean)
-df = 
 bag_of_words, vectorizer = get_bag_of_words(df['text'],ngram_range=(1,3), min_df=0.0002)
 
 print('Shape of bag_of_words: ')
