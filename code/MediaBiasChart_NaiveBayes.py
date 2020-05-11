@@ -73,6 +73,7 @@ df6 = pd.read_csv('../data/filtered_part6.csv')
 df7 = pd.read_csv('../data/filtered_part7.csv')
 df8 = pd.read_csv('../data/filtered_part8.csv')
 df = pd.concat([df1, df2, df3, df4, df6, df7, df8], sort = False)
+df = df[['user_screen_name', 'text']]
 
 all_media = media_bias['Source'].tolist()
 df = df.loc[df['user_screen_name'].isin(all_media)]
@@ -82,7 +83,7 @@ print(df.shape[0])
 
 import preprocessor as p
 df['text']  = df['text'].apply(p.clean)
-
+df = 
 bag_of_words, vectorizer = get_bag_of_words(df['text'],ngram_range=(1,3), min_df=0.0002)
 
 print('Shape of bag_of_words: ')
@@ -123,9 +124,7 @@ print("---Execution time0: %s seconds ---" % (time.time() - start_time))
 
 predict_probs = nb_model.predict_proba(bag_of_words)
 print("---Execution time1: %s seconds ---" % (time.time() - start_time))
-df['left_prob'] = predict_probs[:,0]
 df['right_prob'] = predict_probs[:,1]
-df['pred_LR'] = nb_model.predict(bag_of_words)
 print("---Execution time1.5: %s seconds ---" % (time.time() - start_time))
 average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
