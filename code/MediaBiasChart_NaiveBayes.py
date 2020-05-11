@@ -150,6 +150,9 @@ plt.title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
 
 
+
+print("---Execution time0: %s seconds ---" % (time.time() - start_time))
+
 # Train binary multinomial Naive Bayes model. This one is for Low/High Quality
 def NB_model_qual(bag_of_words, df):
     # Training data:
@@ -169,6 +172,8 @@ def NB_model_qual(bag_of_words, df):
 nb_qual = NB_model_qual(bag_of_words, df)
 predict_qual = nb_qual.predict_proba(bag_of_words)
 df['high_prob'] = predict_qual[:,1]
+
+print("---Execution time0.5: %s seconds ---" % (time.time() - start_time))
 
 average_high_prob = df.groupby(['user_screen_name']).high_prob.mean()
 quality = media_bias.Quality
