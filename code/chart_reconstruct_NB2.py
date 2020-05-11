@@ -235,12 +235,12 @@ dir1 = '../results/half_tweet/media_right_origin.png'
 dir2 = '../results/half_tweet/media_right_recon.png'
 plotsubset(names, dir1, dir2)
 
-names = train_high
+names = high_media
 dir1 = '../results/half_tweet/media_high_origin.png'
 dir2 = '../results/half_tweet/media_high_recon.png'
 plotsubset(names, dir1, dir2)
 
-names = train_low
+names = low_media
 dir1 = '../results/half_tweet/media_low_origin.png'
 dir2 = '../results/half_tweet/media_low_recon.png'
 plotsubset(names, dir1, dir2)
