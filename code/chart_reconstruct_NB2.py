@@ -22,8 +22,8 @@ import time
 start_time = time.time()
 
 extreme_frac = 0.2   # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media. i.e. _extreme_frac_ leftmost media are selected as left media
-training_frac = 0.5  # This sample_frac stands for the percentage of (left/right, high/low) media to be sampled as training data
-
+# training_frac = 0.5  # This sample_frac stands for the percentage of (left/right, high/low) media to be sampled as training data
+training_frac = float(input("Enter a fraction for training set: (default = 0.5)") or '0.5')
 
 # Load all article reviews from MediaBiasChart V5.0:
 media_bias = pd.read_csv('../data/MediaBiasChart.csv')
@@ -94,6 +94,8 @@ print(bag_of_words.shape)
 
 random.seed(0)
 df['sampled'] = np.random.randint(2, size=df.shape[0])
+
+# Train binary multinomial Naive Bayes model for Left/Right Bias
 def NB_model_bias(bag_of_words, df):
     # Training data:
     class1_words = bag_of_words[(df['user_screen_name'].isin(left_media)) & (df['sampled'] == 1),:]
@@ -127,10 +129,10 @@ plt.xlabel('Bias from MediaBiasChart', fontsize=24)
 plt.ylabel('Mean right_probability from model', fontsize=24)
 plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias))
-plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
+plt.savefig('../results/half_tweet/biasvs_frac'+str(int(100*extreme_frac))+'.png')
 
 
-# Train binary multinomial Naive Bayes model. This one is for Low/High Quality
+# Train binary multinomial Naive Bayes model for Low/High Quality
 def NB_model_qual(bag_of_words, df):
     # Training data:
     class1_words = bag_of_words[(df['user_screen_name'].isin(low_media)) & (df['sampled'] == 1),:]
