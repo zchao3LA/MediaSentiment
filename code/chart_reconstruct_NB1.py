@@ -225,7 +225,7 @@ def plotsubset(names, dir1, dir2):
     y0 = [(x-20)/40 for x in media_bias[index].Quality.tolist()]
     x1 = media_bias[index].right_prob.tolist()
     y1 = media_bias[index].high_prob.tolist()
-    size = [x**2 / 100000 for x in media_bias[index].n_tweets.tolist()]
+    size = [x**2 / 900000 for x in media_bias[index].n_tweets.tolist()]
     color = pd.Series(colors)[index].tolist()
     
     plt.figure(figsize=(16, 10))
