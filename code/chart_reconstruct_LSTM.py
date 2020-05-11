@@ -90,7 +90,7 @@ df['quality'] = df['quality']/df['quality'].abs().max()
 articles = []
 labels = []
 
-for index, row in df_2018.iterrows():
+for index, row in df.iterrows():
     labels.append(row[['bias','quality']])
     article = row['text']
     for word in STOPWORDS:
