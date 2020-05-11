@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt
-plt.use('Agg')
+matplotlib.use('Agg')
 import numpy as np
 import CleanData, SaveState
 import importlib
