@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt
+plt.use('Agg')
 import numpy as np
 import CleanData, SaveState
 import importlib
@@ -126,10 +127,14 @@ average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
 media_bias = media_bias.sort_values(by = 'Source')
 bias = media_bias.Bias
+plt.figure(figsize=(13, 8))
 plt.xlabel('Bias from MediaBiasChart', fontsize=24)
 plt.ylabel('Mean right_probability from model', fontsize=24)
 plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
 
 
-print("---Execution time: %s seconds ---" % (time.time() - start_time))
+
+
+
+print("---Execution time2: %s seconds ---" % (time.time() - start_time))
