@@ -93,32 +93,11 @@ print(bag_of_words.shape)
 
 
 random.seed(0)
-train_left = sample(left_media,int(len(left_media)*training_frac))
-train_right = sample(right_media,int(len(right_media)*training_frac))
-test_left = list(set(left_media)-set(train_left))
-test_right = list(set(right_media)-set(train_right))
-print('List of left_media in training set')
-print(train_left)
-print('List of right_media in training set')
-print(train_right)
-
-train_high = sample(high_media,int(len(high_media)/2))
-train_low = sample(low_media,int(len(low_media)/2))
-test_high = list(set(high_media)-set(train_high))
-test_low = list(set(low_media)-set(train_low))
-print('List of high_media in training set')
-print(train_high)
-print('List of low_media in training set')
-print(train_low)
-
-
-
-# Train binary multinomial Naive Bayes model
-
+df['sampled'] = np.random.randint(2, size=df.shape[0])
 def NB_model_bias(bag_of_words, df):
     # Training data:
-    class1_words = bag_of_words[df['user_screen_name'].isin(train_left),:]
-    class2_words = bag_of_words[df['user_screen_name'].isin(train_right),:]
+    class1_words = bag_of_words[(df['user_screen_name'].isin(left_media)) & (df['sampled'] == 1),:]
+    class2_words = bag_of_words[(df['user_screen_name'].isin(right_media)) & (df['sampled'] == 1),:]
     train_tweets = np.concatenate((class1_words,class2_words))
     labels = np.concatenate((np.zeros(class1_words.shape[0]),np.ones(class2_words.shape[0])))
     nb = ComplementNB()
@@ -130,21 +109,21 @@ def NB_model_bias(bag_of_words, df):
     tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
     print(tn, fp, fn, tp)
     return nb
+
 nb_bias = NB_model_bias(bag_of_words, df)
-
 predict_bias = nb_bias.predict_proba(bag_of_words)
-
-
 df['right_prob'] = predict_bias[:,1]
-average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
+
+average_right_prob = df[~(df['user_screen_name'].isin(left_media + right_media) & df['sampled'] == 1)].groupby(['user_screen_name']).right_prob.mean()
 media_bias = media_bias.sort_values(by = 'Source')
 bias = media_bias.Bias
+plt.scatter(bias.tolist(), average_right_prob.tolist())
 
 corr_bias = scipy.stats.pearsonr(average_right_prob.tolist(), bias.tolist())[0]
 
 plt.figure(figsize=(13, 8))
-plt.xlabel('Bias from MediaBiasChart', fontsize=24)	
+plt.xlabel('Bias from MediaBiasChart', fontsize=24) 
 plt.ylabel('Mean right_probability from model', fontsize=24)
 plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias))
@@ -154,8 +133,8 @@ plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png
 # Train binary multinomial Naive Bayes model. This one is for Low/High Quality
 def NB_model_qual(bag_of_words, df):
     # Training data:
-    class1_words = bag_of_words[df['user_screen_name'].isin(train_low),:]
-    class2_words = bag_of_words[df['user_screen_name'].isin(train_high),:]
+    class1_words = bag_of_words[(df['user_screen_name'].isin(low_media)) & (df['sampled'] == 1),:]
+    class2_words = bag_of_words[(df['user_screen_name'].isin(high_media)) & (df['sampled'] == 1),:]
     train_tweets = np.concatenate((class1_words,class2_words))
     labels = np.concatenate((np.zeros(class1_words.shape[0]),np.ones(class2_words.shape[0])))
     nb = ComplementNB()
@@ -167,12 +146,13 @@ def NB_model_qual(bag_of_words, df):
     tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
     print(tn, fp, fn, tp)
     return nb
+
 nb_qual = NB_model_qual(bag_of_words, df)
 predict_qual = nb_qual.predict_proba(bag_of_words)
 df['high_prob'] = predict_qual[:,1]
 
 
-average_high_prob = df.groupby(['user_screen_name']).high_prob.mean()
+average_high_prob = df[~(df['user_screen_name'].isin(low_media + high_media) & df['sampled'] == 1)].groupby(['user_screen_name']).high_prob.mean()
 quality = media_bias.Quality
 corr_quality = scipy.stats.pearsonr(average_high_prob.tolist(), quality.tolist())[0]
 
@@ -181,18 +161,17 @@ plt.xlabel('Quality from MediaBiasChart', fontsize=24)
 plt.ylabel('Mean high_quality_probability from model', fontsize=24)
 plt.scatter(quality.tolist(), average_high_prob.tolist())
 plt.title('Correlation between V5.0 quality and reconstructed quality: '+str(corr_quality))
-plt.savefig('../results/half_media/qualvs_frac'+str(int(100*extreme_frac))+'.png')
+plt.savefig('../results/half_tweet/qualvs_frac'+str(int(100*extreme_frac))+'.png')
 
 
 
-testLR_correct = sum(df[df['user_screen_name'].isin(test_left)].right_prob <= 0.5) + \
-                 sum(df[df['user_screen_name'].isin(test_right)].right_prob > 0.5)
-testLH_correct = sum(df[df['user_screen_name'].isin(test_low)].high_prob <= 0.5) + \
-                 sum(df[df['user_screen_name'].isin(test_high)].high_prob > 0.5)
-print('Bias Testing Accuracy: ' + str(testLR_correct/sum(df['user_screen_name'].isin(test_left+test_right))))
-print('Quality Testing Accuracy: ' + str(testLH_correct/sum(df['user_screen_name'].isin(test_low+test_high))))
+bias_correct = sum(df[(df['user_screen_name'].isin(test_left)) & (df['sampled'] == 0)].pred_LR == 0) + \
+               sum(df[(df['user_screen_name'].isin(test_right)) & (df['sampled'] == 0)].pred_LR == 1)
+qual_correct = sum(df[(df['user_screen_name'].isin(test_low)) & (df['sampled'] == 0)].pred_LH == 0) + \
+                 sum(df[(df['user_screen_name'].isin(test_high)) & (df['sampled'] == 0)].pred_LH == 1)
 
-
+print('Bias Testing Accuracy: ' + str(bias_correct/sum(df['user_screen_name'].isin(test_left+test_right))))
+print('Quality Testing Accuracy: ' + str(qual_correct/sum(df['user_screen_name'].isin(test_low+test_high))))
 
 
 
@@ -242,33 +221,33 @@ def plotsubset(names, dir1, dir2):
     
 
 names = media_bias.Source.tolist()
-dir1 = '../results/half_media/media_all_origin.png'
-dir2 = '../results/half_media/media_all_recon.png'
+dir1 = '../results/half_tweet/media_all_origin.png'
+dir2 = '../results/half_tweet/media_all_recon.png'
 plotsubset(names, dir1, dir2)
 
-names = train_left + train_right
-dir1 = '../results/half_media/media_trainB_origin.png'
-dir2 = '../results/half_media/media_trainB_recon.png'
+names = left_media
+dir1 = '../results/half_tweet/media_left_origin.png'
+dir2 = '../results/half_tweet/media_left_recon.png'
 plotsubset(names, dir1, dir2)
 
-names = list(set(left_media + right_media) - set(train_left + train_right))
-dir1 = '../results/half_media/media_testB_origin.png'
-dir2 = '../results/half_media/media_testB_recon.png'
+names = right_media
+dir1 = '../results/half_tweet/media_right_origin.png'
+dir2 = '../results/half_tweet/media_right_recon.png'
 plotsubset(names, dir1, dir2)
 
-names = train_high + train_low
-dir1 = '../results/half_media/media_trainQ_origin.png'
-dir2 = '../results/half_media/media_trainQ_recon.png'
+names = train_high
+dir1 = '../results/half_tweet/media_high_origin.png'
+dir2 = '../results/half_tweet/media_high_recon.png'
 plotsubset(names, dir1, dir2)
 
-names = list(set(high_media + low_media) - set(train_high + train_low))
-dir1 = '../results/half_media/media_testQ_origin.png'
-dir2 = '../results/half_media/media_testQ_recon.png'
+names = train_low
+dir1 = '../results/half_tweet/media_low_origin.png'
+dir2 = '../results/half_tweet/media_low_recon.png'
 plotsubset(names, dir1, dir2)
 
 names = list(set(media_bias['Source'].tolist()) - set(left_media + right_media + high_media + low_media))
-dir1 = '../results/half_media/media_rest_origin.png'
-dir2 = '../results/half_media/media_rest_recon.png'
+dir1 = '../results/half_tweet/media_rest_origin.png'
+dir2 = '../results/half_tweet/media_rest_recon.png'
 plotsubset(names, dir1, dir2)
 
 
