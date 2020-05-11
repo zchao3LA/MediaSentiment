@@ -17,7 +17,7 @@ from random import sample
 
 from sklearn.naive_bayes import MultinomialNB, ComplementNB
 from sklearn import metrics
-
+import scipy.stats
 import time
 start_time = time.time()
 
@@ -102,6 +102,17 @@ print(train_left)
 print('List of right_media in training set')
 print(train_right)
 
+train_high = sample(high_media,int(len(high_media)/2))
+train_low = sample(low_media,int(len(low_media)/2))
+test_high = list(set(high_media)-set(train_high))
+test_low = list(set(low_media)-set(train_low))
+print('List of high_media in training set')
+print(train_high)
+print('List of low_media in training set')
+print(train_low)
+
+
+
 # Train binary multinomial Naive Bayes model
 
 def get_binary_NB_model_LR(bag_of_words, df):
@@ -119,20 +130,65 @@ def get_binary_NB_model_LR(bag_of_words, df):
     tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
     print(tn, fp, fn, tp)
     return nb
-nb_model = get_binary_NB_model_LR(bag_of_words, df)
+nb_LR = get_binary_NB_model_LR(bag_of_words, df)
 
 
-predict_probs = nb_model.predict_proba(bag_of_words)
+predict_probs = nb_LR.predict_proba(bag_of_words)
 df['right_prob'] = predict_probs[:,1]
 average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
 media_bias = media_bias.sort_values(by = 'Source')
 bias = media_bias.Bias
+
+corr_bias = scipy.stats.pearsonr(average_right_prob.tolist(), bias.tolist())[0]
+
 plt.figure(figsize=(13, 8))
-plt.xlabel('Bias from MediaBiasChart', fontsize=24)
+plt.xlabel('Bias from MediaBiasChart', fontsize=24)	
 plt.ylabel('Mean right_probability from model', fontsize=24)
 plt.scatter(bias.tolist(), average_right_prob.tolist())
+plt.set_title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias))
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
+
+
+# Train binary multinomial Naive Bayes model. This one is for Low/High Quality
+def get_binary_NB_model_LH(bag_of_words, df):
+    # Training data:
+    class1_words = bag_of_words[df['user_screen_name'].isin(train_low),:]
+    class2_words = bag_of_words[df['user_screen_name'].isin(train_high),:]
+    train_tweets = np.concatenate((class1_words,class2_words))
+    labels = np.concatenate((np.zeros(class1_words.shape[0]),np.ones(class2_words.shape[0])))
+    nb = ComplementNB()
+    nb.fit(train_tweets, labels)
+    # # Performance on training data
+    predictions = nb.predict(train_tweets)
+    print('Training Accuracy: ' + str(sum(labels==predictions)/len(labels)))
+    # Compute the error.
+    tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
+    print(tn, fp, fn, tp)
+    return nb
+nb_LH = get_binary_NB_model_LH(bag_of_words, df)
+predict_probs = nb_LH.predict_proba(bag_of_words)
+df['high_prob'] = predict_probs[:,1]
+
+average_high_prob = df.groupby(['user_screen_name']).high_prob.mean()
+quality = media_bias.Quality
+corr_quality = scipy.stats.pearsonr(average_high_prob.tolist(), quality.tolist())[0]
+
+plt.figure(figsize=(13, 8))
+plt.xlabel('Quality from MediaBiasChart', fontsize=24)
+plt.ylabel('Mean high_quality_probability from model', fontsize=24)
+plt.scatter(quality.tolist(), average_high_prob.tolist())
+plt.set_title('Correlation between V5.0 quality and reconstructed quality: '+str(corr_quality))
+plt.savefig('../results/half_media/qualvs_frac'+str(int(100*extreme_frac))+'.png')
+
+
+
+testLR_correct = sum(df[df['user_screen_name'].isin(test_left)].right_prob <= 0.5) + \
+                 sum(df[df['user_screen_name'].isin(test_right)].nb_tweet_pred_LR > 0.5)
+testLH_correct = sum(df[df['user_screen_name'].isin(test_low)].nb_tweet_pred_LH <= 0.5) + \
+                 sum(df[df['user_screen_name'].isin(test_high)].nb_tweet_pred_LH > 0.5)
+print('Bias Testing Accuracy: ' + str(testLR_correct/sum(df['user_screen_name'].isin(test_left+test_right))))
+print('Quality Testing Accuracy: ' + str(testLH_correct/sum(df['user_screen_name'].isin(test_low+test_high))))
 
 
 
