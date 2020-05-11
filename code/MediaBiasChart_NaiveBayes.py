@@ -85,7 +85,7 @@ print(df.shape[0])
 
 import preprocessor as p
 df['text']  = df['text'].apply(p.clean)
-bag_of_words, vectorizer = get_bag_of_words(df['text'],ngram_range=(1,3), min_df=0.0002)
+bag_of_words, vectorizer = get_bag_of_words(df['text'],ngram_range=(1,3), min_df=0.0001)
 
 print('Shape of bag_of_words: ')
 print(bag_of_words.shape)
@@ -132,11 +132,17 @@ def NB_model_bias(bag_of_words, df):
     return nb
 nb_bias = NB_model_bias(bag_of_words, df)
 
+print("---Execution time0.1: %s seconds ---" % (time.time() - start_time))
 
 predict_bias = nb_bias.predict_proba(bag_of_words)
+
+
+print("---Execution time0.2: %s seconds ---" % (time.time() - start_time))
+
 df['right_prob'] = predict_bias[:,1]
 average_right_prob = df.groupby(['user_screen_name']).right_prob.mean()
 
+print("---Execution time0.3: %s seconds ---" % (time.time() - start_time))
 media_bias = media_bias.sort_values(by = 'Source')
 bias = media_bias.Bias
 
@@ -150,8 +156,8 @@ plt.title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
 
 
+print("---Execution time0.4: %s seconds ---" % (time.time() - start_time))
 
-print("---Execution time0: %s seconds ---" % (time.time() - start_time))
 
 # Train binary multinomial Naive Bayes model. This one is for Low/High Quality
 def NB_model_qual(bag_of_words, df):
