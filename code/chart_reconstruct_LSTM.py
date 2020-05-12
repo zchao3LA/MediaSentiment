@@ -4,6 +4,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -11,8 +13,7 @@ from nltk.corpus import stopwords
 STOPWORDS = set(stopwords.words('english'))
 import scipy.stats
 import argparse
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 import time
 start_time = time.time()
 
