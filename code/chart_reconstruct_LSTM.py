@@ -11,6 +11,8 @@ from nltk.corpus import stopwords
 STOPWORDS = set(stopwords.words('english'))
 import scipy.stats
 import argparse
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import time
 start_time = time.time()
 
@@ -61,7 +63,7 @@ df8 = pd.read_csv('../data/filtered_part8.csv')
 df = pd.concat([df1, df2, df3, df4, df6, df7, df8], sort = False)
 
 ### Take a subset; comment this piece for the formal test ###
-df = df.loc[((df['created_at']) >= '2018-01-01') & ((df['created_at']) <= '2018-1-30')]
+df = df.loc[((df['created_at']) >= '2018-01-01') & ((df['created_at']) <= '2018-01-31')]
 df = df.reset_index(drop = True)
 ###
 
