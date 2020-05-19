@@ -24,12 +24,13 @@ start_time = time.time()
 parser = argparse.ArgumentParser(description='params')
 parser.add_argument('--media', type=float, default=0.2, help='portion of media to be considered as left/right/low/high')
 parser.add_argument('--train', type=float, default=0.8, help='portion of media for training')
+parser.add_argument('--max_tweets', type=int, default=10000, help='portion of media for training')
 args = parser.parse_args()
 # extreme_frac = 0.2   # This extreme_frac stands for the percentage of media to be selected as left/right, high/low media. i.e. _extreme_frac_ leftmost media are selected as left media
 # training_frac = 0.5  # This sample_frac stands for the percentage of (left/right, high/low) media to be sampled as training data
 # training_frac = float(input("Enter a fraction for training set: (default = 0.5)") or '0.5')
 
-
+max_tweets = args.max_tweets
 extreme_frac = args.media
 training_frac = args.train
 # Load all article reviews from MediaBiasChart V5.0:
@@ -86,6 +87,11 @@ df = df[['user_screen_name', 'text']]
 
 all_media = media_bias['Source'].tolist()
 df = df.loc[df['user_screen_name'].isin(all_media)]
+
+### Take only _max_tweets_ tweets for each media
+df = df.sample(frac=1).reset_index(drop=True)
+df = df.groupby('user_screen_name').head(max_tweets).reset_index(drop=True)
+###
 
 print('Total number of tweets: ')
 print(df.shape[0])
