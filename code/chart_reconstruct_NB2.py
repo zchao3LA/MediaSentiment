@@ -142,7 +142,7 @@ plt.xlabel('Bias from MediaBiasChart', fontsize=24)
 plt.ylabel('Mean right_probability from model', fontsize=24)
 plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias))
-plt.savefig('../results/half_tweet/biasvs_frac'+str(int(100*extreme_frac))+'.png')
+plt.savefig('../results/half_tweet/vsbias_frac'+str(int(100*extreme_frac))+'.png')
 
 
 # Train binary multinomial Naive Bayes model for Low/High Quality
@@ -176,7 +176,7 @@ plt.xlabel('Quality from MediaBiasChart', fontsize=24)
 plt.ylabel('Mean high_quality_probability from model', fontsize=24)
 plt.scatter(quality.tolist(), average_high_prob.tolist())
 plt.title('Correlation between V5.0 quality and reconstructed quality: '+str(corr_quality))
-plt.savefig('../results/half_tweet/qualvs_frac'+str(int(100*extreme_frac))+'.png')
+plt.savefig('../results/half_tweet/vsqual_frac'+str(int(100*extreme_frac))+'.png')
 
 
 
