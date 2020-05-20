@@ -196,6 +196,7 @@ df_test['bias_pred'] = bias_pred
 df_test['qual_pred'] = qual_pred
 
 import scipy
+media_bias = media_bias.sort_values(by = ['Source'])
 average_bias = df_test.groupby(['user_screen_name']).bias_pred.mean()
 average_qual = df_test.groupby(['user_screen_name']).qual_pred.mean()
 bias = media_bias.Bias
