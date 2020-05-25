@@ -155,7 +155,7 @@ plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias))
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
 
-print('Bias Correlation: ' + str(corr_bias))
+
 # Train binary multinomial Naive Bayes model. This one is for Low/High Quality
 def NB_model_qual(bag_of_words, df):
     # Training data:
@@ -187,7 +187,7 @@ plt.ylabel('Mean high_quality_probability from model', fontsize=24)
 plt.scatter(quality.tolist(), average_high_prob.tolist())
 plt.title('Correlation between V5.0 quality and reconstructed quality: '+str(corr_quality))
 plt.savefig('../results/half_media/qualvs_frac'+str(int(100*extreme_frac))+'.png')
-print('Quality Correlation: ' + str(corr_quality))
+
 
 
 testLR_correct = sum(df[df['user_screen_name'].isin(test_left)].right_prob <= 0.5) + \
@@ -197,8 +197,8 @@ testLH_correct = sum(df[df['user_screen_name'].isin(test_low)].high_prob <= 0.5)
 print('Bias Testing Accuracy: ' + str(testLR_correct/sum(df['user_screen_name'].isin(test_left+test_right))))
 print('Quality Testing Accuracy: ' + str(testLH_correct/sum(df['user_screen_name'].isin(test_low+test_high))))
 
-
-
+print('Bias Correlation: ' + str(corr_bias))
+print('Quality Correlation: ' + str(corr_quality))
 
 
 
