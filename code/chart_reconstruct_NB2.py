@@ -119,7 +119,7 @@ def NB_model_bias(bag_of_words, df):
     nb.fit(train_tweets, labels)
     # # Performance on training data
     predictions = nb.predict(train_tweets)
-    print('Training Accuracy: ' + str(sum(labels==predictions)/len(labels)))
+    print('Bias Training Accuracy: ' + str(sum(labels==predictions)/len(labels)))
     # Compute the error.
     tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
     print(tn, fp, fn, tp)
@@ -156,7 +156,7 @@ def NB_model_qual(bag_of_words, df):
     nb.fit(train_tweets, labels)
     # # Performance on training data
     predictions = nb.predict(train_tweets)
-    print('Training Accuracy: ' + str(sum(labels==predictions)/len(labels)))
+    print('Quality Training Accuracy: ' + str(sum(labels==predictions)/len(labels)))
     # Compute the error.
     tn, fp, fn, tp = metrics.confusion_matrix(labels,predictions).ravel()
     print(tn, fp, fn, tp)
@@ -188,7 +188,8 @@ qual_correct = sum(df[(df['user_screen_name'].isin(low_media)) & (df['sampled'] 
 print('Bias Testing Accuracy: ' + str(bias_correct/sum((df['user_screen_name'].isin(left_media+right_media)) & (df['sampled'] == 0))))
 print('Quality Testing Accuracy: ' + str(qual_correct/sum((df['user_screen_name'].isin(high_media+low_media)) & (df['sampled'] == 0))))
 
-
+print('Bias Correlation: ' + str(corr_bias))
+print('Quality Correlation: ' + str(corr_quality))
 
 
 n_tweets = df.groupby(['user_screen_name']).size()
