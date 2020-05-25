@@ -102,19 +102,19 @@ train_left = sample(left_media,int(len(left_media)*training_frac))
 train_right = sample(right_media,int(len(right_media)*training_frac))
 test_left = list(set(left_media)-set(train_left))
 test_right = list(set(right_media)-set(train_right))
-print('List of left_media in training set')
-print(train_left)
-print('List of right_media in training set')
-print(train_right)
+# print('List of left_media in training set')
+# print(train_left)
+# print('List of right_media in training set')
+# print(train_right)
 
 train_high = sample(high_media,int(len(high_media)/2))
 train_low = sample(low_media,int(len(low_media)/2))
 test_high = list(set(high_media)-set(train_high))
 test_low = list(set(low_media)-set(train_low))
-print('List of high_media in training set')
-print(train_high)
-print('List of low_media in training set')
-print(train_low)
+# print('List of high_media in training set')
+# print(train_high)
+# print('List of low_media in training set')
+# print(train_low)
 
 
 
@@ -155,7 +155,7 @@ plt.scatter(bias.tolist(), average_right_prob.tolist())
 plt.title('Correlation between V5.0 bias and reconstructed bias: '+str(corr_bias))
 plt.savefig('../results/half_media/biasvs_frac'+str(int(100*extreme_frac))+'.png')
 
-
+print('Bias Correlation: ' + str(corr_bias))
 # Train binary multinomial Naive Bayes model. This one is for Low/High Quality
 def NB_model_qual(bag_of_words, df):
     # Training data:
@@ -187,7 +187,7 @@ plt.ylabel('Mean high_quality_probability from model', fontsize=24)
 plt.scatter(quality.tolist(), average_high_prob.tolist())
 plt.title('Correlation between V5.0 quality and reconstructed quality: '+str(corr_quality))
 plt.savefig('../results/half_media/qualvs_frac'+str(int(100*extreme_frac))+'.png')
-
+print('Quality Correlation: ' + str(corr_quality))
 
 
 testLR_correct = sum(df[df['user_screen_name'].isin(test_left)].right_prob <= 0.5) + \
