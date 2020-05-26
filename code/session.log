@@ -1,0 +1,74 @@
+Script started on 2020-05-25 16:59:23-0700
+zehanchao@lonepine:~/MediaSentiment/code$ python3 me[K[Kchart_reconstruct_NB2.py 3[K--tra in 0.5; python3 chart_reconstruct_NB2.py --train 0.65 [K; python3 chart_reconstruct__NB2.py --train 0.8; p
+Display all 403 possibilities? (y or n)
+zehanchao@lonepine:~/MediaSentiment/code$ python3 chart_reconstruct_NB2.py --traiin 0.5; python3 chart_reconstruct_NB2.py --train 0.65; python3 chart_reconstruct__NB2.py --train 0.8; python3 chart_reconstruct_NB
+chart_reconstruct_NB1.py  chart_reconstruct_NB2.py  
+zehanchao@lonepine:~/MediaSentiment/code$ python3 chart_reconstruct_NB2.py --traiin 0.5; python3 chart_reconstruct_NB2.py --train 0.65; python3 chart_reconstruct__NB2.py --train 0.8; python3 chart_reconstruct_NB2.py --train 0.95
+/home/zehanchao/.local/lib/python3.6/site-packages/sklearn/externals/joblib/externals/cloudpickle/cloudpickle.py:47: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+  import imp
+[nltk_data] Downloading package stopwords to
+[nltk_data]     /home/zehanchao/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+Total number of tweets: 
+561360
+Shape of bag_of_words: 
+(561360, 7540)
+Training Accuracy: 0.7085035476241669
+41183 15249 17289 37903
+Training Accuracy: 0.7679069984593119
+43458 10392 14464 38781
+Bias Testing Accuracy: 0.6817744704180035
+Quality Testing Accuracy: 0.7548059348961018
+---Execution done in: 94.55022954940796 seconds ---
+/home/zehanchao/.local/lib/python3.6/site-packages/sklearn/externals/joblib/externals/cloudpickle/cloudpickle.py:47: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+  import imp
+[nltk_data] Downloading package stopwords to
+[nltk_data]     /home/zehanchao/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+Total number of tweets: 
+561360
+Shape of bag_of_words: 
+(561360, 7521)
+Training Accuracy: 0.7092956431162674
+41031 15275 17099 37959
+Training Accuracy: 0.7688638131566369
+43305 10162 14500 38732
+Bias Testing Accuracy: 0.683708877670878
+Quality Testing Accuracy: 0.7531353012036942
+---Execution done in: 94.02413082122803 seconds ---
+/home/zehanchao/.local/lib/python3.6/site-packages/sklearn/externals/joblib/externals/cloudpickle/cloudpickle.py:47: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+  import imp
+[nltk_data] Downloading package stopwords to
+[nltk_data]     /home/zehanchao/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+Total number of tweets: 
+561360
+Shape of bag_of_words: 
+(561360, 7547)
+Training Accuracy: 0.7090386114570919
+41069 15385 17086 38059
+Training Accuracy: 0.7674096791083851
+43181 10435 14441 38895
+Bias Testing Accuracy: 0.6836699852639903
+Quality Testing Accuracy: 0.7532714304434918
+---Execution done in: 94.65622234344482 seconds ---
+/home/zehanchao/.local/lib/python3.6/site-packages/sklearn/externals/joblib/externals/cloudpickle/cloudpickle.py:47: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+  import imp
+[nltk_data] Downloading package stopwords to
+[nltk_data]     /home/zehanchao/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+Total number of tweets: 
+561360
+Shape of bag_of_words: 
+(561360, 7499)
+Training Accuracy: 0.7080808805076543
+41096 15063 17507 37906
+Training Accuracy: 0.768405710441737
+43248 10470 14318 38996
+Bias Testing Accuracy: 0.6854445332782364
+Quality Testing Accuracy: 0.7532738820091051
+---Execution done in: 94.43020391464233 seconds ---
+zehanchao@lonepine:~/MediaSentiment/code$ exit
+exit
+
+Script done on 2020-05-25 17:08:45-0700
