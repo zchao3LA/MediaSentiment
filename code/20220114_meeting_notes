@@ -1,0 +1,32 @@
+20220114_meeting_notes
+
+Now the performace was from 1k tweets per media, the 'formal' result will use 10k or 20k, it take longer and I have to use the server.
+Want to confirm the experiment setting before I move all test to server.
+
+
+Results:
+r = [4 4 4]:
+CI = 10; para.zeta = max(D(:))/2; para.gamma = 0.99; 
+Very Long runtime (10+min); relative error = 0.945
+
+CI = 10; para.zeta = max(D(:))/4; para.gamma = 0.9; 
+Runtime: 5 min; relative error = 0.976; relative density = 0.974
+
+CI = 12; para.zeta = max(D(:))/4; para.gamma = 0.9; 
+Runtime: 7 min; relative error = 1.03; relative density = 8.78 (exploding)
+
+CI = 10; para.zeta = max(D(:))/4; para.gamma = 0.9; Symmetric sampling
+Runtime: 7 min; relative error = 0.962; relative density = 0.974
+
+CI = 10; para.zeta = max(D(:))/2; para.gamma = 0.95;  Fixed Fiber - L = 0; Random Fiber - L = 0; 
+
+
+r = [3 3 3]:
+CI = 10; para.zeta = max(D(:))/4; para.gamma = 0.9; Symmetric sampling
+Runtime: 1 min; relative error = 0.991; relative density = 0.988
+
+r = [100 100 100]:
+Runtime: 7 min; relative error = 0.895; relative density = 2.04
+
+r = [235 235 235]:
+Runtime: 7 min; relative error = 0.475; relative density = 0.016
